@@ -3,3 +3,6 @@
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
+
+# Junction linkage script
+Create-Junction.ps1
