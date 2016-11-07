@@ -4,5 +4,12 @@
 !.vscode/tasks.json
 !.vscode/launch.json
 
-# Junction linkage script
-Create-Junction.ps1
+# Folder config file
+Desktop.ini
+
+# Release output dir.
+[Rr]elease/
+
+# Automation Logs
+[Rr]obocopy.log
+TestsResults.xml
