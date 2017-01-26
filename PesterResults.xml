@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<test-results xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="nunit_schema_2.5.xsd" name="Pester" total="16" errors="0" failures="0" not-run="0" inconclusive="0" ignored="0" skipped="0" invalid="0" date="2017-01-26" time="08:56:41">
+  <environment user="twillingham" machine-name="TWILLIN-201604" cwd="C:\Working Folder\Projects\DellWarranty\Test" user-domain="CLG" platform="Microsoft Windows 10 Enterprise|C:\windows|\Device\Harddisk1\Partition3" nunit-version="2.5.8.0" os-version="10.0.14393" clr-version="4.0.30319.42000" />
+  <culture-info current-culture="en-US" current-uiculture="en-US" />
+  <test-suite type="Powershell" name="Pester" executed="True" result="Success" success="True" time="1.4997" asserts="0">
+    <results>
+      <test-suite type="TestFixture" name="File Formatting" executed="True" result="Success" success="True" time="0.9525" asserts="0" description="File Formatting">
+        <results>
+          <test-case description="Doesn't use Unicode encoding" name="File Formatting.Doesn't use Unicode encoding" time="0.8539" asserts="0" success="True" result="Success" executed="True" />
+          <test-case description="Uses spaces for indentation, not tabs" name="File Formatting.Uses spaces for indentation, not tabs" time="0.0986" asserts="0" success="True" result="Success" executed="True" />
+        </results>
+      </test-suite>
+      <test-suite type="TestFixture" name="Module manifest" executed="True" result="Success" success="True" time="0.5472" asserts="0" description="Module manifest">
+        <results>
+          <test-case description="has a valid manifest" name="Module manifest.has a valid manifest" time="0.1729" asserts="0" success="True" result="Success" executed="True" />
+          <test-case description="has a valid name in the manifest" name="Module manifest.has a valid name in the manifest" time="0.0375" asserts="0" success="True" result="Success" executed="True" />
+          <test-case description="has a valid root module" name="Module manifest.has a valid root module" time="0.0342" asserts="0" success="True" result="Success" executed="True" />
+          <test-case description="has a valid version in the manifest" name="Module manifest.has a valid version in the manifest" time="0.0506" asserts="0" success="True" result="Success" executed="True" />
+          <test-case description="has a valid description" name="Module manifest.has a valid description" time="0.0238" asserts="0" success="True" result="Success" executed="True" />
+          <test-case description="has a valid author" name="Module manifest.has a valid author" time="0.0215" asserts="0" success="True" result="Success" executed="True" />
+          <test-case description="has a valid guid" name="Module manifest.has a valid guid" time="0.0254" asserts="0" success="True" result="Success" executed="True" />
+          <test-case description="has a valid copyright" name="Module manifest.has a valid copyright" time="0.0187" asserts="0" success="True" result="Success" executed="True" />
+          <test-case description="has a valid version in the appveyor config" name="Module manifest.has a valid version in the appveyor config" time="0.0577" asserts="0" success="True" result="Success" executed="True" />
+          <test-case description="has a valid version in the change log" name="Module manifest.has a valid version in the change log" time="0.0198" asserts="0" success="True" result="Success" executed="True" />
+          <test-case description="has a valid version in the release notes" name="Module manifest.has a valid version in the release notes" time="0.021" asserts="0" success="True" result="Success" executed="True" />
+          <test-case description="appveyor config and manifest versions are the same" name="Module manifest.appveyor config and manifest versions are the same" time="0.0255" asserts="0" success="True" result="Success" executed="True" />
+          <test-case description="change log and manifest versions are the same" name="Module manifest.change log and manifest versions are the same" time="0.0181" asserts="0" success="True" result="Success" executed="True" />
+          <test-case description="release notes and manifest versions are the same" name="Module manifest.release notes and manifest versions are the same" time="0.0207" asserts="0" success="True" result="Success" executed="True" />
+        </results>
+      </test-suite>
+    </results>
+  </test-suite>
+</test-results>
