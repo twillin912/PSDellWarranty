@@ -1,5 +1,5 @@
 ---
-external help file: DellWarranty-help.xml
+external help file: PSDellWarranty-help.xml
 online version: https://github.com/twillin912/DellWarranty
 schema: 2.0.0
 ---
@@ -12,7 +12,7 @@ Get asset information for Dell servers.
 ## SYNTAX
 
 ```
-Get-DellAssetInfo [[-ComputerName] <String[]>] [[-ServiceTag] <String[]>] [-Latest] [<CommonParameters>]
+Get-DellAssetInfo [[-ComputerName] <String[]>] [[-ServiceTag] <String[]>] [-Latest]
 ```
 
 ## DESCRIPTION
@@ -88,9 +88,6 @@ Default value: False
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
-
-### CommonParameters
-This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see about_CommonParameters (http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
 

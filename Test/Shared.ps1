@@ -2,7 +2,8 @@
 
 if (!$SuppressImportModule) {
     # -Scope Global is needed when running tests from inside of psake, otherwise
-    # the module's functions cannot be found in the DellWarranty\ namespace
-    Import-Module $env:BHPSModuleManifest -Scope Global
+    # the module's functions cannot be found in the PSDellWarranty\ namespace
+    Import-Module "$($SrcRootDir)\$($ModuleName).psd1" -Scope Global
 }
+
 

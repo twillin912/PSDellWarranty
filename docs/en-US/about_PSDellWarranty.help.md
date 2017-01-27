@@ -1,5 +1,5 @@
-# DellWarranty
-## about_DellWarranty
+# PSDellWarranty
+## about_PSDellWarranty
 
 ```
 ABOUT TOPIC NOTE:

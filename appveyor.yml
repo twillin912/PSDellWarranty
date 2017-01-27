@@ -1,13 +1,3 @@
-# Notes:
-#   - Minimal appveyor.yml file is an empty file. All sections are optional.
-#   - Indent each level of configuration with 2 spaces. Do not use tabs!
-#   - All section names are case-sensitive.
-#   - Section names should be unique on each level.
-
-#---------------------------------#
-#      general configuration      #
-#---------------------------------#
-
 # version format
 version: 0.1.0.{build}
 
@@ -17,10 +7,6 @@ branches:
     - master
     - develop
 
-#---------------------------------#
-#    environment configuration    #
-#---------------------------------#
-
 # Allow WMF5 (i.e. PowerShellGallery functionality)
 image: WMF 5
 
@@ -28,58 +14,22 @@ image: WMF 5
 environment:
   NuGetApiKey:
     secure: 8fzPA9jCuntNmDKjf/RWRvEQuqqsuMNJ7ywZ2hIWnbrETAWc9JtW3PnhEhnRXaIU
-  GitHubKey:
-    secure: 3GTTXmNgNrCZkv0w/qp8+Be5+f/ApC3bqm5eqSnFcMmb2Muu7KMInEQDJPiU6pj8
-
-#---------------------------------#
-#       build configuration       #
-#---------------------------------#
 
 build: false
 
-#---------------------------------#
-#       tests configuration       #
-#---------------------------------#
-
 test_script:
-  - ps: .\Build\build.ps1 Publish
+  - ps: .\build.ps1 Publish
 
-#---------------------------------#
-#     deployment configuration    #
-#---------------------------------#
-
-# scripts to run before deployment
 deploy:
-  release: PSDellWarranty-v$(appveyor_build_version)
-  provider: GitHub
+- provider: GitHub
+  release: $(APPVEYOR_REPO_TAG_NAME)
+  description: "GitHub Release"
   auth_token:
     secure: 3GTTXmNgNrCZkv0w/qp8+Be5+f/ApC3bqm5eqSnFcMmb2Muu7KMInEQDJPiU6pj8
   artifact: /.*\.zip/
+  draft: false
+  prerelease: false
   on:
     branch: master
     appveyor_repo_tag: true
 
-#---------------------------------#
-#        global handlers          #
-#---------------------------------#
-
-# on successful build
-on_success:
-
-# on build failure
-on_failure:
-
-# after build failure or success
-on_finish:
-  - ps: |
-      # Publish the contents of the Release folder
-      Add-Type -AssemblyName System.IO.Compression.FileSystem
-      $ZipFile = "$pwd\$(appveyor_project_name).zip"
-      [System.IO.Compression.ZipFile]::CreateFromDirectory("$pwd\Release", $ZipFile)
-      Push-AppveyorArtifact $ZipFile
-
-#---------------------------------#
-#         notifications           #
-#---------------------------------#
-
-# notifications:
