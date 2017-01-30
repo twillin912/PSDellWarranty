@@ -1,5 +1,5 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/3yhhetglsftww55t?svg=true)](https://ci.appveyor.com/project/twillin912/psdellwarranty)
-[![Documentation Status](https://readthedocs.org/projects/psdellwarranty/badge/?version=latest)](http://psdellwarranty.readthedocs.io/en/latest/?badge=latest)
+[![Documentation Status](http://readthedocs.org/projects/psdellwarranty/badge/?version=stable)](http://psdellwarranty.readthedocs.io/en/stable/?badge=stable)
 
 # PSDellWarranty Module
 
