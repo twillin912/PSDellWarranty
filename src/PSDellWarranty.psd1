@@ -12,7 +12,7 @@
 RootModule = 'PSDellWarranty.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.1.0'
+ModuleVersion = '0.2.0'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -24,7 +24,7 @@ GUID = '7b4a2d55-4661-478c-a22c-b16ad76ef793'
 Author = 'Trent Willingham'
 
 # Company or vendor of this module
-CompanyName = 'Unknown'
+CompanyName = 'Cambium Learning'
 
 # Copyright statement for this module
 Copyright = '(c) 2017 Trent Willingham. All rights reserved.'
@@ -63,13 +63,13 @@ Description = 'This module retreives asset and warranty information for Dell equ
 # TypesToProcess = @()
 
 # Format files (.ps1xml) to be loaded when importing this module
-# FormatsToProcess = @()
+FormatsToProcess = @('PSDellWarranty.Format.ps1xml')
 
 # Modules to import as nested modules of the module specified in RootModule/ModuleToProcess
 # NestedModules = @()
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-FunctionsToExport = @('Get-DellAssetInfo','Get-DellWarrantyInfo')
+FunctionsToExport = @('Get-DellWarranty')
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
 CmdletsToExport = @()

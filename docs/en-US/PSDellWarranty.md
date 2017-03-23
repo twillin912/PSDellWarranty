@@ -8,12 +8,9 @@ Locale: en-US
 
 # PSDellWarranty Module
 ## Description
-{{Manually Enter Description Here}}
+This module retreives asset and warranty information for Dell equipment from the Dell REST API.
 
 ## PSDellWarranty Cmdlets
-### [Get-DellAssetInfo](Get-DellAssetInfo.md)
-{{Manually Enter Get-DellAssetInfo Description Here}}
-
-### [Get-DellWarrantyInfo](Get-DellWarrantyInfo.md)
-{{Manually Enter Get-DellWarrantyInfo Description Here}}
+### [Get-DellWarranty](Get-DellWarranty.md)
+The Get-DellWarranty cmdlet submits requests to the Dell API site to retrieve system warranty information for a list of computers or service tags.
 

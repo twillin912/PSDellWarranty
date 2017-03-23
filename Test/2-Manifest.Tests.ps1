@@ -109,4 +109,3 @@ Describe 'Module manifest' {
 
 }
 
-
