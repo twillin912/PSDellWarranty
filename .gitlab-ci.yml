@@ -1,4 +1,3 @@
-image: microsoft/windowsservercore
 stages:
   - test
   - release
@@ -6,11 +5,16 @@ stages:
 Test:
   stage: test
   script:
-    - .\build.ps1 Test
+    - .\build.ps1
+    - Invoke-psake -buildFile "$PSScriptRoot\build\build.psake.ps1" -taskList Test
+  tags:
+    - powershell
 
 Release:
   stage: release
   script:
-    - .\build.ps1 Deploy
+    - .\build.ps1 Publish
   only:
     - stable
+  tags:
+    - powershell

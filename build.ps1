@@ -10,4 +10,4 @@ foreach ( $Module in $RequiredModules ) {
     if ( ! ( Get-Module -Name $Module -ListAvailable ) ) { Install-Module -Name $Module -Scope CurrentUser -Force | Out-Null }
 }
 
-Invoke-psake -buildFile "$PSScriptRoot\build\build.psake.ps1" -taskList $Task -Verbose:$VerbosePreference
+#Invoke-psake -buildFile "$PSScriptRoot\build\build.psake.ps1" -taskList $Task -Verbose:$VerbosePreference -ErrorVariable $PsakeErrors
