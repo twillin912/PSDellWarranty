@@ -33,17 +33,18 @@ function Get-DellWarranty {
     [OutputType([PSCustomObject])]
 
     Param (
-        [Parameter(Mandatory = $false,
-            ValueFromPipelineByPropertyName = $true)]
+        [Parameter(ValueFromPipelineByPropertyName)]
         [Alias('Name','HostName')]
         [string[]] $ComputerName,
 
         [Parameter(Mandatory = $false,
-            ValueFromPipelineByPropertyName = $true)]
+            ValueFromPipelineByPropertyName)]
         [ValidateLength(7,7)]
         [ValidatePattern('[a-zA-Z0-9]')]
         [Alias('SerialNumber')]
         [string[]] $ServiceTag,
+
+        [PSCredential] $Credential,
 
         [Parameter(Mandatory = $false)]
         [Switch] $Active,
@@ -69,8 +70,9 @@ function Get-DellWarranty {
         }
 
         $HostList = @{}
-        $ServiceTagList = @()
         $InvalidTags = @()
+        $OutputObject = @()
+        $ServiceTagList = @()
     }
 
     Process {
@@ -82,9 +84,19 @@ function Get-DellWarranty {
             }
 
             Write-Verbose -Message "Query CIM instance for manufacturer and service tag."
-            $CimBios = Get-CimInstance -ClassName Win32_BIOS -ComputerName $Computer
-            $CimSystem = Get-CimInstance -ClassName Win32_ComputerSystem -ComputerName $Computer
-
+            try {
+                if ( $Credential ) {
+                    $CimSession = New-CimSession -ComputerName $Computer -Credential $Credential
+                } else {
+                    $CimSession = New-CimSession -ComputerName $Computer
+                }
+                $CimBios = Get-CimInstance -CimSession $CimSession -ClassName Win32_BIOS
+                $CimSystem = Get-CimInstance -CimSession $CimSession -ClassName Win32_ComputerSystem
+            }
+            catch {
+                Write-Warning -Message "CIM connection to '$Computer' failed."
+                continue
+            }
             if ( -not ( $CimSystem.Manufacturer -match 'Dell' ) ) {
                 Write-Warning "System manufacturer '$($CimSystem.Manufacturer)' on computer '$($Computer)' is not supported by this cmdlet."
                 Continue
@@ -93,62 +105,71 @@ function Get-DellWarranty {
             $ServiceTagList += $CimBios.SerialNumber
         }
 
-        $ServiceTagList += $ServiceTag
-        if ( -not $ServiceTagList ) {
-            Write-Warning -Message "No valid service tags specified. Aborting"
-            break
-        }
-        $RequestBody = @{ 'ID' = $($ServiceTagList -join ',') }
-
-        Write-Verbose -Message "Submitting query for the service tags $($RequestBody.Item('ID'))."
-        $Response = Invoke-RestMethod -Uri $ApiUri -Method Get -Headers $RequestHeader -Body $RequestBody
-
-        $InvalidTags += $Response.InvalidFormatAssets.BadAssets
-        $InvalidTags += $Response.InvalidBILAssets.BadAssets
-
-        foreach ( $AssetRecord in $Response.AssetWarrantyResponse ) {
-            $HeaderData = $AssetRecord.AssetHeaderData
-            $EntitlementData = $AssetRecord.AssetEntitlementData
-            foreach ( $EntitlementRecord in $EntitlementData ) {
-                if ( $EntitlementRecord.ServiceLevelCode -notin ('D','KK') ) {
-                    $Out = New-Object -TypeName PSObject -Property @{
-                        # Data from AssetHeaderData
-                        HostName            = $HostList.Item($HeaderData.ServiceTag)
-                        ServiceTag          = $HeaderData.ServiceTag
-                        BUID                = $HeaderData.BUID
-                        CountryLookupCode   = $HeaderData.CountryLookupCode
-                        CustomerNumber      = $HeaderData.CustomerNumber
-                        IsDuplicate         = $HeaderData.IsDuplicate
-                        ItemClassCode       = $HeaderData.ItemClassCode
-                        LocalChannel        = $HeaderData.LocalChannel
-                        MachineDescription  = $HeaderData.MachineDescription
-                        OrderNumber         = $HeaderData.OrderNumber
-                        ParentServiceTag    = $HeaderData.ParentServiceTag
-                        ShipDate            = ConvertTo-Date $HeaderData.ShipDate
-
-                        # Data from AssetEntitlementData
-                        EntitlementType         = $EntitlementRecord.EntitlementType
-                        ItemNumber              = $EntitlementRecord.ItemNumber
-                        ServiceLevelCode        = $EntitlementRecord.ServiceLevelCode
-                        ServiceLevelDescription = $EntitlementRecord.ServiceLevelDescription
-                        ServiceLevelGroup       = $EntitlementRecord.ServiceLevelGroup
-                        ServiceProvider         = $EntitlementRecord.ServiceProvider
-                        StartDate               = ConvertTo-Date $EntitlementRecord.StartDate
-                        EndDate                 = ConvertTo-Date $EntitlementRecord.EndDate
-                    }
-                }
-
-                $Out.PSObject.TypeNames.Insert(0,'PSDellWarranty.WarrantyRecord')
-                if ( -not $Active -or ( $Active -and $Out.EndDate -gt (Get-Date) ) ) {
-                    Write-Output -InputObject $Out
-                }
-            }
+        foreach ( $Tag in $ServiceTag ) {
+            $ServiceTagList += $Tag
         }
     }
 
     End {
+        if ( -not $ServiceTagList ) {
+            Write-Warning -Message "No valid service tags specified. Aborting"
+            break
+        }
+        foreach ( $Array in (Split-Array -InputObject $ServiceTagList -SplitSize 2) ) {
+
+            $RequestBody = @{ 'ID' = $($Array -join ',') }
+
+            Write-Verbose -Message "Submitting query for the service tags $($RequestBody.Item('ID'))."
+            $Response = Invoke-RestMethod -Uri $ApiUri -Method Get -Headers $RequestHeader -Body $RequestBody
+
+            $InvalidTags += $Response.InvalidFormatAssets.BadAssets
+            $InvalidTags += $Response.InvalidBILAssets.BadAssets
+
+            foreach ( $AssetRecord in $Response.AssetWarrantyResponse ) {
+                $HeaderData = $AssetRecord.AssetHeaderData
+                $EntitlementData = $AssetRecord.AssetEntitlementData
+                foreach ( $EntitlementRecord in $EntitlementData ) {
+                    if ( $EntitlementRecord.ServiceLevelCode -notin ('D','KK') ) {
+                        $NewRecord = New-Object -TypeName PSObject -Property @{
+                            # Data from AssetHeaderData
+                            HostName            = $HostList.Item($HeaderData.ServiceTag)
+                            ServiceTag          = $HeaderData.ServiceTag
+                            BUID                = $HeaderData.BUID
+                            CountryLookupCode   = $HeaderData.CountryLookupCode
+                            CustomerNumber      = $HeaderData.CustomerNumber
+                            IsDuplicate         = $HeaderData.IsDuplicate
+                            ItemClassCode       = $HeaderData.ItemClassCode
+                            LocalChannel        = $HeaderData.LocalChannel
+                            MachineDescription  = $HeaderData.MachineDescription
+                            OrderNumber         = $HeaderData.OrderNumber
+                            ParentServiceTag    = $HeaderData.ParentServiceTag
+                            ShipDate            = ConvertTo-Date $HeaderData.ShipDate
+
+                            # Data from AssetEntitlementData
+                            EntitlementType         = $EntitlementRecord.EntitlementType
+                            ItemNumber              = $EntitlementRecord.ItemNumber
+                            ServiceLevelCode        = $EntitlementRecord.ServiceLevelCode
+                            ServiceLevelDescription = $EntitlementRecord.ServiceLevelDescription
+                            ServiceLevelGroup       = $EntitlementRecord.ServiceLevelGroup
+                            ServiceProvider         = $EntitlementRecord.ServiceProvider
+                            StartDate               = ConvertTo-Date $EntitlementRecord.StartDate
+                            EndDate                 = ConvertTo-Date $EntitlementRecord.EndDate
+                        }
+
+                        if ( $NewRecord ) {
+                            $NewRecord.PSObject.TypeNames.Insert(0,'PSDellWarranty.WarrantyRecord')
+                            $OutputObject += $NewRecord
+                        }
+                        Remove-Variable -Name NewRecord
+                    }
+                }
+            }
+        }
+
         if ( $InvalidTags ) {
             Write-Warning -Message "No results for ServiceTag(s) '$($InvalidTags -join ',')'"
         }
-    }
+
+        Write-Output -InputObject $OutputObject
+   }
 }

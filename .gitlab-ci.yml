@@ -1,0 +1,16 @@
+image: microsoft/windowsservercore
+stages:
+  - test
+  - release
+
+Test:
+  stage: test
+  script:
+    - .\build.ps1 Test
+
+Release:
+  stage: release
+  script:
+    - .\build.ps1 Deploy
+  only:
+    - stable
