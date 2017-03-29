@@ -1,0 +1,10 @@
+site_name: PSDellWarranty Documentation
+repo_url: https://github.com/twillin912/PSDellWarranty
+theme: readthedocs
+pages:
+  - Home: index.md
+  - PSDellWarranty Basics:
+    - Quick Start: quickstart.md
+  - Functions:
+    - Get-DellWarranty: Functions/Get-DellWarranty.md
+

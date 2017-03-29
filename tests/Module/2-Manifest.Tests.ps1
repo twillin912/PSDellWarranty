@@ -1,6 +1,6 @@
 [System.Diagnostics.CodeAnalysis.SuppressMessage('PSUseDeclaredVarsMoreThanAssigments', '', Scope='*', Target='SuppressImportModule')]
 $SuppressImportModule = $true
-. $PSScriptRoot\Shared.ps1
+. $PSScriptRoot/../Shared.ps1
 
 $AppVeyorPath = Join-Path -Path $ProjectRoot -Child "appveyor.yml"
 $ChangeLogPath = Join-Path -Path $ProjectRoot -Child "CHANGELOG.md"
@@ -13,16 +13,16 @@ Describe 'Module manifest' {
 
         It "has a valid manifest" {
             {
-                $script:Manifest = Test-ModuleManifest -Path "$($SrcRootDir)\$($ModuleName).psd1" -ErrorAction Stop -WarningAction SilentlyContinue
+                $script:Manifest = Test-ModuleManifest -Path "$env:BHPSModuleManifest" -ErrorAction Stop -WarningAction SilentlyContinue
             } | Should Not Throw
         }
 
         It "has a valid name in the manifest" {
-            $script:Manifest.Name | Should Be $ModuleName
+            $script:Manifest.Name | Should Be $env:BHProjectName
         }
 
         It 'has a valid root module' {
-            $script:Manifest.RootModule | Should Be "$ModuleName.psm1"
+            $script:Manifest.RootModule | Should Be "$env:BHProjectName.psm1"
         }
 
         It "has a valid version in the manifest" {
@@ -55,18 +55,25 @@ Describe 'Module manifest' {
     }
 
     Context 'Versioning' {
+        $script:ManifestVersion = New-Object -TypeName Version -ArgumentList $script:Manifest.Version.Major, $script:Manifest.Version.Minor, $script:Manifest.Version.Build
 
-        $script:AppVeyorVersion = $null
-        It "has a valid version in the appveyor config" {
-            foreach ($line in (Get-Content $AppVeyorPath)) {
-                if ($line -match "^version: (?<Version>(\d+(\.\d+){1,3})).*") {
-                    $script:AppVeyorVersion = $matches.Version
-                    break
+        if ( $UseAppVeyor ) {
+            $script:AppVeyorVersion = $null
+            It "has a valid version in the appveyor config" {
+                foreach ($line in (Get-Content $AppVeyorPath)) {
+                    if ($line -match "^version: (?<Version>(\d+(\.\d+){1,3})).*") {
+                        $script:AppVeyorVersion = $matches.Version
+                        break
+                    }
                 }
+                $script:AppVeyorVersion                | Should Not BeNullOrEmpty
+                $script:AppVeyorVersion -as [Version]  | Should Not BeNullOrEmpty
+                Write-Verbose $script:AppVeyorVersion
             }
-            $script:AppVeyorVersion                | Should Not BeNullOrEmpty
-            $script:AppVeyorVersion -as [Version]  | Should Not BeNullOrEmpty
-            Write-Verbose $script:AppVeyorVersion
+
+            It "appveyor config and manifest versions are the same" {
+                $script:AppVeyorVersion -as [Version] | Should be ( $script:ManifestVersion -as [Version] )
+            }
         }
 
         $script:ChangeLogVersion = $null
@@ -93,16 +100,12 @@ Describe 'Module manifest' {
             $script:ReleaseNotesVersion -as [Version]  | Should Not BeNullOrEmpty
         }
 
-        It "appveyor config and manifest versions are the same" {
-            $script:AppVeyorVersion -as [Version] | Should be ( $script:Manifest.Version -as [Version] )
-        }
-
         It "change log and manifest versions are the same" {
-            $script:ChangeLogVersion -as [Version] | Should be ( $script:Manifest.Version -as [Version] )
+            $script:ChangeLogVersion -as [Version] | Should be ( $script:ManifestVersion -as [Version] )
         }
 
         It "release notes and manifest versions are the same" {
-            $script:ReleaseNotesVersion -as [Version] | Should be ( $script:Manifest.Version -as [Version] )
+            $script:ReleaseNotesVersion -as [Version] | Should be ( $script:ManifestVersion -as [Version] )
         }
 
     }

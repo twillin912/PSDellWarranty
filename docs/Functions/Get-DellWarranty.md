@@ -12,8 +12,8 @@ Get warranty information for Dell computers.
 ## SYNTAX
 
 ```
-Get-DellWarranty [[-ComputerName] <String[]>] [[-ServiceTag] <String[]>] [-Active] [[-ApiKey] <String>]
- [-UseSandbox] [<CommonParameters>]
+Get-DellWarranty [[-ComputerName] <String[]>] [[-ServiceTag] <String[]>] [[-Credential] <PSCredential>]
+ [-Active] [[-ApiKey] <String>] [-UseSandbox] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -50,7 +50,7 @@ Get all warranty information by computer name and export to CSV file for review
 ```yaml
 Type: String[]
 Parameter Sets: (All)
-Aliases: Name, HostName
+Aliases: Name, IPAddress
 
 Required: False
 Position: 1
@@ -74,13 +74,28 @@ Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
+### -Credential
+{{Fill Credential Description}}
+
+```yaml
+Type: PSCredential
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 3
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -Active
 Switch to display only warranties that have not expired.
 
 ```yaml
 Type: SwitchParameter
 Parameter Sets: (All)
-Aliases: 
+Aliases:
 
 Required: False
 Position: Named
@@ -96,10 +111,10 @@ This defaults to the Cambium Learning API key.
 ```yaml
 Type: String
 Parameter Sets: (All)
-Aliases: 
+Aliases:
 
 Required: False
-Position: 3
+Position: 4
 Default value: 5be19193171b46ab8851e183d3e7f47a
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -111,7 +126,7 @@ Switch to use the Dell sandbox URI for testing.
 ```yaml
 Type: SwitchParameter
 Parameter Sets: (All)
-Aliases: 
+Aliases:
 
 Required: False
 Position: Named
