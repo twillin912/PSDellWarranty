@@ -1,10 +1,10 @@
 [System.Diagnostics.CodeAnalysis.SuppressMessage('PSUseDeclaredVarsMoreThanAssigments', '', Scope='*', Target='SuppressImportModule')]
 $SuppressImportModule = $true
-. $PSScriptRoot\Shared.ps1
+. $PSScriptRoot/../Shared.ps1
 
 Describe 'File Formatting' {
 
-    $Textfiles = Get-ChildItem -Path $ProjectRoot -Include '*.ps1', '*.psm1', '*.psd1' -Recurse
+    $Textfiles = Get-ChildItem -Path $env:BHProjectPath -Include '*.ps1', '*.psm1', '*.psd1' -Recurse
 
     It "Doesn't use Unicode encoding" {
         $FileCount = 0

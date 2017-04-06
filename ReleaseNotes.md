@@ -1,6 +1,6 @@
-## What is new in PSDellWarranty 0.2.0
+# What is new in PSDellWarranty 0.2.0
 
-- Features
+## New Features
   - Initial release of module with Get-DellAssetInfo and Get-DellWarrantyInfo
 
 

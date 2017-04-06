@@ -33,12 +33,15 @@ function Get-DellWarranty {
     [OutputType([PSCustomObject])]
 
     Param (
-        [Parameter(ValueFromPipelineByPropertyName)]
-        [Alias('Name','HostName')]
+        [Parameter(
+            ValueFromPipelineByPropertyName=$true
+        )]
+        [Alias('Name','IPAddress')]
         [string[]] $ComputerName,
 
-        [Parameter(Mandatory = $false,
-            ValueFromPipelineByPropertyName)]
+        [Parameter(
+            ValueFromPipelineByPropertyName=$true
+        )]
         [ValidateLength(7,7)]
         [ValidatePattern('[a-zA-Z0-9]')]
         [Alias('SerialNumber')]
@@ -56,13 +59,13 @@ function Get-DellWarranty {
         [Switch] $UseSandbox
     )
 
-    Begin {
+    begin {
         $RequestHeader = @{
             'content-type' = 'application/x-www-form-urlencoded'
             'apikey' = "$ApiKey"
         }
 
-        if ( $UseSandbox ) {
+        if ($UseSandbox) {
             $ApiUri = 'https://sandbox.api.dell.com/support/assetinfo/v4/getassetwarranty'
         }
         else {
@@ -75,7 +78,7 @@ function Get-DellWarranty {
         $ServiceTagList = @()
     }
 
-    Process {
+    process {
         foreach ( $Computer in $ComputerName ) {
             Write-Verbose -Message "Testing connection to '$Computer'."
             if ( -not ( Test-Connection $Computer -Count 1 -Quiet ) ) {
@@ -110,7 +113,7 @@ function Get-DellWarranty {
         }
     }
 
-    End {
+    end {
         if ( -not $ServiceTagList ) {
             Write-Warning -Message "No valid service tags specified. Aborting"
             break

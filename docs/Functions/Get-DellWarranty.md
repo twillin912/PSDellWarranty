@@ -50,7 +50,7 @@ Get all warranty information by computer name and export to CSV file for review
 ```yaml
 Type: String[]
 Parameter Sets: (All)
-Aliases: Name, HostName
+Aliases: Name, IPAddress
 
 Required: False
 Position: 1
