@@ -52,8 +52,8 @@ function Get-DellWarranty {
         [Parameter(Mandatory = $false)]
         [Switch] $Active,
 
-        [Parameter(Mandatory = $false)]
-        [string] $ApiKey = '5be19193171b46ab8851e183d3e7f47a',
+        [Parameter(Mandatory = $true)]
+        [string] $ApiKey,
 
         [Parameter(Mandatory = $false)]
         [Switch] $UseSandbox
